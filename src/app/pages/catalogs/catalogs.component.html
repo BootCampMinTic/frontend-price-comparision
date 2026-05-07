@@ -1,0 +1,28 @@
+<div class="page-header"><h1>Catálogos</h1></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+  <div class="card"><h3>Estados</h3>
+    @for (s of states(); track s.id) { <span class="badge badge-yellow" style="margin:0.2rem">{{ s.description }}</span> }
+  </div>
+  <div class="card"><h3>Tipos de Usuario</h3>
+    @for (t of typeUsers(); track t.id) { <span class="badge badge-blue" style="margin:0.2rem">{{ t.description }}</span> }
+  </div>
+  <div class="card"><h3>Categorías Producto</h3>
+    @for (c of catProducts(); track c.id) { <span class="badge badge-green" style="margin:0.2rem">{{ c.description }}</span> }
+  </div>
+  <div class="card"><h3>Categorías Tienda</h3>
+    @for (c of catStores(); track c.id) { <span class="badge badge-blue" style="margin:0.2rem">{{ c.description }}</span> }
+  </div>
+</div>
+
+<div class="card" style="margin-top:1rem">
+  <h3>Tipos de Documento</h3>
+  <table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Código</th><th>Regex</th></tr></thead>
+    <tbody>
+      @for (d of docTypes(); track d.id) {
+        <tr><td>{{ d.id }}</td><td>{{ d.name }}</td><td>{{ d.documentType }}</td><td style="font-family:monospace;font-size:0.8rem">{{ d.regex }}</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,11 +1,20 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('frontend-price-comparision');
+  readonly navItems = [
+    { path: '/', label: 'Inicio', icon: '🏠' },
+    { path: '/stores', label: 'Tiendas', icon: '🏪' },
+    { path: '/products', label: 'Productos', icon: '📦' },
+    { path: '/sales', label: 'Ventas', icon: '💰' },
+    { path: '/users', label: 'Usuarios', icon: '👤' },
+    { path: '/clients', label: 'Clientes', icon: '🏢' },
+    { path: '/catalogs', label: 'Catálogos', icon: '📋' },
+  ];
 }

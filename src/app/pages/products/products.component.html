@@ -1,0 +1,48 @@
+<div class="page-header"><h1>Productos</h1><button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}</button></div>
+
+@if (showForm()) {
+  <div class="card">
+    <h3>Nuevo Producto</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Nombre</label><input [(ngModel)]="newProduct.name" /></div>
+      <div class="form-group"><label>Precio</label><input type="number" [(ngModel)]="newProduct.price" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Tienda ID</label><input type="number" [(ngModel)]="newProduct.storeId" /></div>
+      <div class="form-group"><label>Categoria ID</label><input type="number" [(ngModel)]="newProduct.categoryProductId" /></div>
+    </div>
+    <button class="success" (click)="create()">Guardar</button>
+  </div>
+}
+
+<div class="card">
+  <div class="form-row">
+    <div class="form-group">
+      <label>Filtrar por tienda</label>
+      <select [(ngModel)]="filterStoreId" (change)="loadProducts()">
+        <option [ngValue]="0">Todas</option>
+        @for (store of stores(); track store.id) { <option [ngValue]="store.id">{{ store.name }}</option> }
+      </select>
+    </div>
+  </div>
+</div>
+
+@if (loading()) { <p class="loading">Cargando...</p> }
+@else if (products().length === 0) { <p class="empty">No hay productos</p> }
+@else {
+  <div class="card">
+    <table>
+      <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Tienda</th><th>Categoria</th></tr></thead>
+      <tbody>
+        @for (p of products(); track p.id) {
+          <tr>
+            <td>{{ p.id }}</td><td>{{ p.name }}</td>
+            <td>${{ p.price.toLocaleString('es-CO') }}</td>
+            <td>{{ p.storeName || 'N/A' }}</td>
+            <td><span class="badge badge-green">{{ p.categoryProductDescription || 'N/A' }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

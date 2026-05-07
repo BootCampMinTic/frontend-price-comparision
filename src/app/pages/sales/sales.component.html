@@ -1,0 +1,49 @@
+<div class="page-header"><h1>Ventas</h1><button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nueva Venta' }}</button></div>
+
+@if (showForm()) {
+  <div class="card">
+    <h3>Nueva Venta</h3>
+    <div class="form-row">
+      <div class="form-group"><label>User ID</label><input type="number" [(ngModel)]="newSale.userId" /></div>
+      <div class="form-group"><label>Store ID</label><input type="number" [(ngModel)]="newSale.storeId" /></div>
+      <div class="form-group"><label>State ID</label><input type="number" [(ngModel)]="newSale.stateId" /></div>
+    </div>
+    <h4 style="margin: 1rem 0 0.5rem">Productos</h4>
+    <table>
+      <thead><tr><th></th><th>Producto</th><th>Precio</th></tr></thead>
+      <tbody>
+        @for (p of products(); track p.id) {
+          <tr>
+            <td><input type="checkbox" [checked]="newSale.productIds.includes(p.id)" (change)="toggleProduct(p.id)" /></td>
+            <td>{{ p.name }}</td>
+            <td>${{ p.price.toLocaleString('es-CO') }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <button class="success" (click)="create()" style="margin-top:1rem">Crear Venta</button>
+  </div>
+}
+
+@if (loading()) { <p class="loading">Cargando...</p> }
+@else if (sales().length === 0) { <p class="empty">No hay ventas</p> }
+@else {
+  @for (sale of sales(); track sale.id) {
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem">
+        <h3>Venta #{{ sale.id }}</h3>
+        <span class="badge badge-yellow">{{ sale.stateDescription }}</span>
+      </div>
+      <p style="font-size:0.85rem;color:#888">{{ sale.date | date:'medium' }}</p>
+      <p style="font-size:0.85rem">👤 {{ sale.userName }} · 🏪 {{ sale.storeName }}</p>
+      <table style="margin-top:0.8rem">
+        <thead><tr><th>Producto</th><th>Precio</th></tr></thead>
+        <tbody>
+          @for (ps of sale.products; track ps.id) {
+            <tr><td>{{ ps.productName }}</td><td>${{ ps.productPrice.toLocaleString('es-CO') }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}
