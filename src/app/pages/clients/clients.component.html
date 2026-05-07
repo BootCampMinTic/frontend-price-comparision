@@ -1,85 +1,61 @@
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <h1 class="text-2xl font-bold text-gray-900">Clientes</h1>
-    <p class="text-gray-500 text-sm mt-1">Gestion de clientes naturales y juridicos</p>
-  </div>
-  <button (click)="showForm.set(!showForm())"
-    class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-    [class]="showForm() ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' : 'bg-indigo-600 text-white hover:bg-indigo-700'">
-    {{ showForm() ? 'Cancelar' : '+ Nuevo Cliente' }}
-  </button>
-</div>
+<div class="page-header"><h1>Clientes</h1><button mat-flat-button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Cliente' }}</button></div>
 
-<div class="flex gap-2 mb-6">
-  <button (click)="activeTab.set('natural')"
-    class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
-    [class]="activeTab() === 'natural' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'">
-    Persona Natural
-  </button>
-  <button (click)="activeTab.set('legal')"
-    class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
-    [class]="activeTab() === 'legal' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'">
-    Persona Juridica
-  </button>
-</div>
-
-@if (showForm()) {
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-    @if (activeTab() === 'natural') {
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Nuevo Cliente Natural</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre</label><input [(ngModel)]="newNatural.name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Apellido</label><input [(ngModel)]="newNatural.lastName" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Documento</label><input [(ngModel)]="newNatural.documentNumber" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label><input [(ngModel)]="newNatural.electronicInvoiceEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-      </div>
-      <button (click)="createNatural()" class="mt-4 px-5 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors">Guardar Cliente</button>
-    } @else {
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Nuevo Cliente Juridico</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Empresa</label><input [(ngModel)]="newLegal.companyName" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-1.5">NIT</label><input [(ngModel)]="newLegal.documentNumber" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" /></div>
-      </div>
-      <button (click)="createLegal()" class="mt-4 px-5 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors">Guardar Cliente</button>
+<mat-tab-group style="margin-bottom: 1rem;">
+  <mat-tab label="Persona Natural">
+    @if (showForm()) {
+      <mat-card appearance="outlined" style="margin: 1rem 0;">
+        <mat-card-header><mat-card-title>Nuevo Cliente Natural</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <mat-form-field appearance="outline"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="newNatural.name" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Apellido</mat-label><input matInput [(ngModel)]="newNatural.lastName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Documento</mat-label><input matInput [(ngModel)]="newNatural.documentNumber" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput [(ngModel)]="newNatural.electronicInvoiceEmail" /></mat-form-field>
+          </div>
+        </mat-card-content>
+        <mat-card-actions><button mat-flat-button color="primary" (click)="createNatural()">Guardar</button></mat-card-actions>
+      </mat-card>
     }
-  </div>
-}
-
-@if (loading()) {
-  <div class="text-center py-12 text-gray-400">Cargando...</div>
-} @else {
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <table class="w-full">
-      @if (activeTab() === 'natural') {
-        <thead class="bg-gray-50 border-b border-gray-100">
-          <tr><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Apellido</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Documento</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th></tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-          @for (c of naturalClients(); track c.id) {
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 text-sm text-gray-500 font-mono">#{{ c.id }}</td>
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ c.name }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ c.lastName }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600 font-mono">{{ c.documentNumber }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ c.electronicInvoiceEmail }}</td>
-            </tr>
-          }
-        </tbody>
-      } @else {
-        <thead class="bg-gray-50 border-b border-gray-100">
-          <tr><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Empresa</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">NIT</th><th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th></tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-          @for (c of legalClients(); track c.id) {
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 text-sm text-gray-500 font-mono">#{{ c.id }}</td>
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ c.companyName }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600 font-mono">{{ c.documentNumber }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ c.electronicInvoiceEmail }}</td>
-            </tr>
-          }
-        </tbody>
-      }
-    </table>
-  </div>
-}
+    @if (loading()) { <div class="loading">Cargando...</div> }
+    @else {
+      <mat-card appearance="outlined">
+        <table mat-table [dataSource]="naturalClients()">
+          <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let c">#{{ c.id }}</td></ng-container>
+          <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let c">{{ c.name }}</td></ng-container>
+          <ng-container matColumnDef="lastName"><th mat-header-cell *matHeaderCellDef>Apellido</th><td mat-cell *matCellDef="let c">{{ c.lastName }}</td></ng-container>
+          <ng-container matColumnDef="documentNumber"><th mat-header-cell *matHeaderCellDef>Documento</th><td mat-cell *matCellDef="let c" style="font-family:monospace">{{ c.documentNumber }}</td></ng-container>
+          <ng-container matColumnDef="email"><th mat-header-cell *matHeaderCellDef>Email</th><td mat-cell *matCellDef="let c">{{ c.electronicInvoiceEmail }}</td></ng-container>
+          <tr mat-header-row *matHeaderRowDef="naturalColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: naturalColumns;"></tr>
+        </table>
+      </mat-card>
+    }
+  </mat-tab>
+  <mat-tab label="Persona Jurídica">
+    @if (showForm()) {
+      <mat-card appearance="outlined" style="margin: 1rem 0;">
+        <mat-card-header><mat-card-title>Nuevo Cliente Jurídico</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <mat-form-field appearance="outline"><mat-label>Empresa</mat-label><input matInput [(ngModel)]="newLegal.companyName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>NIT</mat-label><input matInput [(ngModel)]="newLegal.documentNumber" /></mat-form-field>
+          </div>
+        </mat-card-content>
+        <mat-card-actions><button mat-flat-button color="primary" (click)="createLegal()">Guardar</button></mat-card-actions>
+      </mat-card>
+    }
+    @if (loading()) { <div class="loading">Cargando...</div> }
+    @else {
+      <mat-card appearance="outlined">
+        <table mat-table [dataSource]="legalClients()">
+          <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let c">#{{ c.id }}</td></ng-container>
+          <ng-container matColumnDef="companyName"><th mat-header-cell *matHeaderCellDef>Empresa</th><td mat-cell *matCellDef="let c">{{ c.companyName }}</td></ng-container>
+          <ng-container matColumnDef="documentNumber"><th mat-header-cell *matHeaderCellDef>NIT</th><td mat-cell *matCellDef="let c" style="font-family:monospace">{{ c.documentNumber }}</td></ng-container>
+          <ng-container matColumnDef="email"><th mat-header-cell *matHeaderCellDef>Email</th><td mat-cell *matCellDef="let c">{{ c.electronicInvoiceEmail }}</td></ng-container>
+          <tr mat-header-row *matHeaderRowDef="legalColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: legalColumns;"></tr>
+        </table>
+      </mat-card>
+    }
+  </mat-tab>
+</mat-tab-group>

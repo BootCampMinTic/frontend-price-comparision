@@ -1,5 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { StoreService } from '../../services/store.service';
 import { ProductService } from '../../services/product.service';
 import { SaleService } from '../../services/sale.service';
@@ -7,19 +9,18 @@ import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule],
+  imports: [RouterModule, MatButtonModule, MatCardModule],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
-  private readonly storeService = inject(StoreService);
-  private readonly productService = inject(ProductService);
-  private readonly saleService = inject(SaleService);
-  private readonly userService = inject(UserService);
-
   readonly stores = signal(0);
   readonly products = signal(0);
   readonly sales = signal(0);
   readonly users = signal(0);
+  private readonly storeService = inject(StoreService);
+  private readonly productService = inject(ProductService);
+  private readonly saleService = inject(SaleService);
+  private readonly userService = inject(UserService);
 
   ngOnInit() {
     this.storeService.getAll(1, 1).subscribe((r) => this.stores.set(r.data.length));

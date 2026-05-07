@@ -1,85 +1,51 @@
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <h1 class="text-2xl font-bold text-gray-900">Ventas</h1>
-    <p class="text-gray-500 text-sm mt-1">Registro de ventas con productos</p>
-  </div>
-  <button (click)="showForm.set(!showForm())"
-    class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
-    [class]="showForm() ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' : 'bg-indigo-600 text-white hover:bg-indigo-700'">
-    {{ showForm() ? 'Cancelar' : '+ Nueva Venta' }}
-  </button>
-</div>
+<div class="page-header"><h1>Ventas</h1><button mat-flat-button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nueva Venta' }}</button></div>
 
 @if (showForm()) {
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Nueva Venta</h3>
-    <div class="grid grid-cols-3 gap-4 mb-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Usuario ID</label>
-        <input type="number" [(ngModel)]="newSale.userId" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+  <mat-card appearance="outlined" style="margin-bottom: 1rem;">
+    <mat-card-header><mat-card-title>Nueva Venta</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <mat-form-field appearance="outline"><mat-label>Usuario ID</mat-label><input matInput type="number" [(ngModel)]="newSale.userId" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Tienda ID</mat-label><input matInput type="number" [(ngModel)]="newSale.storeId" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Estado ID</mat-label><input matInput type="number" [(ngModel)]="newSale.stateId" /></mat-form-field>
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tienda ID</label>
-        <input type="number" [(ngModel)]="newSale.storeId" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Estado ID</label>
-        <input type="number" [(ngModel)]="newSale.stateId" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
-      </div>
-    </div>
-    <h4 class="text-sm font-semibold text-gray-700 mb-3">Seleccionar Productos</h4>
-    <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
-      <table class="w-full">
-        <tbody class="divide-y divide-gray-100">
-          @for (p of products(); track p.id) {
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-2.5"><input type="checkbox" [checked]="newSale.productIds.includes(p.id)" (change)="toggleProduct(p.id)" class="w-4 h-4 text-indigo-600 rounded" /></td>
-              <td class="px-4 py-2.5 text-sm text-gray-900">{{ p.name }}</td>
-              <td class="px-4 py-2.5 text-sm font-medium text-emerald-600 text-right">${{ p.price.toLocaleString('es-CO') }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <button (click)="create()" class="mt-4 px-5 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors">Crear Venta</button>
-  </div>
-}
-
-@if (loading()) {
-  <div class="text-center py-12 text-gray-400">Cargando...</div>
-} @else if (sales().length === 0) {
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center text-gray-400">
-    <p class="text-lg">No hay ventas registradas</p>
-  </div>
-} @else {
-  <div class="space-y-4">
-    @for (sale of sales(); track sale.id) {
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-b border-gray-100">
-          <div>
-            <h3 class="text-sm font-semibold text-gray-900">Venta #{{ sale.id }}</h3>
-            <p class="text-xs text-gray-500 mt-0.5">{{ sale.date | date:'medium' }}</p>
-          </div>
-          <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">{{ sale.stateDescription }}</span>
-        </div>
-        <div class="px-6 py-3 flex gap-6 text-sm text-gray-600 border-b border-gray-50">
-          <span>👤 {{ sale.userName }}</span>
-          <span>🏪 {{ sale.storeName }}</span>
-        </div>
-        <table class="w-full">
-          <thead class="bg-gray-50/50">
-            <tr><th class="text-left px-6 py-2 text-xs font-medium text-gray-500">Producto</th><th class="text-right px-6 py-2 text-xs font-medium text-gray-500">Precio</th></tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50">
-            @for (ps of sale.products; track ps.id) {
-              <tr>
-                <td class="px-6 py-2.5 text-sm text-gray-900">{{ ps.productName }}</td>
-                <td class="px-6 py-2.5 text-sm font-medium text-emerald-600 text-right">${{ ps.productPrice.toLocaleString('es-CO') }}</td>
-              </tr>
-            }
-          </tbody>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.5rem;">Seleccionar Productos</h3>
+      <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+        <table mat-table [dataSource]="products()">
+          <ng-container matColumnDef="select"><th mat-header-cell *matHeaderCellDef></th><td mat-cell *matCellDef="let p"><mat-checkbox [checked]="newSale.productIds.includes(p.id)" (change)="toggleProduct(p.id)" /></td></ng-container>
+          <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Producto</th><td mat-cell *matCellDef="let p">{{ p.name }}</td></ng-container>
+          <ng-container matColumnDef="price"><th mat-header-cell *matHeaderCellDef>Precio</th><td mat-cell *matCellDef="let p" style="color:var(--success);font-weight:600">${{ p.price.toLocaleString('es-CO') }}</td></ng-container>
+          <tr mat-header-row *matHeaderRowDef="productColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: productColumns;"></tr>
         </table>
       </div>
+    </mat-card-content>
+    <mat-card-actions><button mat-flat-button color="primary" (click)="create()">Crear Venta</button></mat-card-actions>
+  </mat-card>
+}
+
+@if (loading()) { <div class="loading">Cargando...</div> }
+@else if (sales().length === 0) { <div class="empty-state"><h3>No hay ventas</h3></div> }
+@else {
+  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    @for (sale of sales(); track sale.id) {
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Venta #{{ sale.id }} - {{ sale.date | date:'medium' }}</mat-panel-title>
+            <mat-panel-description>
+              <span class="badge badge-amber">{{ sale.stateDescription }}</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p style="margin-bottom:0.5rem;color:var(--text-secondary)">{{ sale.userName }} · {{ sale.storeName }}</p>
+          <table mat-table [dataSource]="sale.products">
+            <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Producto</th><td mat-cell *matCellDef="let ps">{{ ps.productName }}</td></ng-container>
+            <ng-container matColumnDef="price"><th mat-header-cell *matHeaderCellDef>Precio</th><td mat-cell *matCellDef="let ps" style="color:var(--success);font-weight:600">${{ ps.productPrice.toLocaleString('es-CO') }}</td></ng-container>
+            <tr mat-header-row *matHeaderRowDef="['name', 'price']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name','price'];"></tr>
+          </table>
+        </mat-expansion-panel>
+      </mat-accordion>
     }
   </div>
 }

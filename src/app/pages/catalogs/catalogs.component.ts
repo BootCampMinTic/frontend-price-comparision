@@ -1,4 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTableModule } from '@angular/material/table';
 import { StateService } from '../../services/state.service';
 import { TypeUserService } from '../../services/type-user.service';
 import { CategoryProductService } from '../../services/category-product.service';
@@ -8,6 +11,7 @@ import { State, TypeUser, CategoryProduct, CategoryStore } from '../../models';
 
 @Component({
   selector: 'app-catalogs',
+  imports: [MatCardModule, MatChipsModule, MatTableModule],
   templateUrl: './catalogs.component.html',
 })
 export class CatalogsComponent implements OnInit {
@@ -16,12 +20,12 @@ export class CatalogsComponent implements OnInit {
   private readonly catProdService = inject(CategoryProductService);
   private readonly catStoreService = inject(CategoryStoreService);
   private readonly docTypeService = inject(DocumentTypeService);
-
   readonly states = signal<State[]>([]);
   readonly typeUsers = signal<TypeUser[]>([]);
   readonly catProducts = signal<CategoryProduct[]>([]);
   readonly catStores = signal<CategoryStore[]>([]);
   readonly docTypes = signal<any[]>([]);
+  docColumns = ['id', 'name', 'code', 'regex'];
 
   ngOnInit() {
     this.stateService.getAll().subscribe((r) => this.states.set(r));

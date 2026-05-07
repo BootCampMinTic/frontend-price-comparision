@@ -1,0 +1,14 @@
+.sidenav-container { height: 100vh; background: var(--bg); }
+.sidenav { width: 240px; border-right: 1px solid var(--border); }
+.sidenav-header { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+
+.active-link {
+  background: rgba(67, 97, 238, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+.active-link mat-icon {
+  color: var(--primary) !important;
+}
+
+.content { padding: 1.5rem; }
