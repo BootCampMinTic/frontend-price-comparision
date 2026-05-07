@@ -1,36 +1,19 @@
-<div class="page-header">
-  <h1>Dashboard</h1>
-</div>
+<div class="content">
+  <div class="page-header"><h1>Dashboard</h1></div>
 
-<div class="stats-grid">
-  <div class="stat-card" routerLink="/stores">
-    <div class="stat-number">{{ stores() }}</div>
-    <div class="stat-label">Tiendas</div>
+  <div class="stats-grid">
+    <a routerLink="/stores" class="stat-card"><div class="stat-number">{{ stores() }}</div><div class="stat-label">Tiendas</div></a>
+    <a routerLink="/products" class="stat-card"><div class="stat-number">{{ products() }}</div><div class="stat-label">Productos</div></a>
+    <a routerLink="/sales" class="stat-card"><div class="stat-number">{{ sales() }}</div><div class="stat-label">Ventas</div></a>
+    <a routerLink="/users" class="stat-card"><div class="stat-number">{{ users() }}</div><div class="stat-label">Usuarios</div></a>
   </div>
-  <div class="stat-card" routerLink="/products">
-    <div class="stat-number">{{ products() }}</div>
-    <div class="stat-label">Productos</div>
-  </div>
-  <div class="stat-card" routerLink="/sales">
-    <div class="stat-number">{{ sales() }}</div>
-    <div class="stat-label">Ventas</div>
-  </div>
-  <div class="stat-card" routerLink="/users">
-    <div class="stat-number">{{ users() }}</div>
-    <div class="stat-label">Usuarios</div>
+
+  <div class="card">
+    <div class="card-header"><h3>Bienvenido a Price Comparison</h3></div>
+    <p style="color:#6c757d;">Sistema de comparación de precios entre tiendas. Usa el menú lateral para gestionar tiendas, productos, ventas, usuarios y clientes.</p>
+    <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+      <a routerLink="/stores" class="btn btn-primary">Ver Tiendas</a>
+      <a routerLink="/products" class="btn btn-outline-primary">Ver Productos</a>
+    </div>
   </div>
 </div>
-
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Bienvenido a Price Comparison</mat-card-title>
-    <mat-card-subtitle>Sistema de comparación de precios entre tiendas</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <p style="color: var(--text-secondary);">Usa el menú lateral para navegar entre las secciones y gestionar tiendas, productos, ventas, usuarios y clientes.</p>
-  </mat-card-content>
-  <mat-card-actions align="start">
-    <a mat-flat-button routerLink="/stores">Ver Tiendas</a>
-    <a mat-stroked-button routerLink="/products">Ver Productos</a>
-  </mat-card-actions>
-</mat-card>

@@ -1,49 +1,47 @@
-<div class="page-header">
-  <h1>Productos</h1>
-  <button mat-flat-button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}</button>
-</div>
+<div class="content">
+  <div class="page-header"><h1>Productos</h1>
+    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}</button>
+  </div>
 
-@if (showForm()) {
-  <mat-card appearance="outlined" style="margin-bottom: 1rem;">
-    <mat-card-header><mat-card-title>Nuevo Producto</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-        <mat-form-field appearance="outline"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="newProduct.name" /></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Precio</mat-label><input matInput type="number" [(ngModel)]="newProduct.price" /></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Tienda ID</mat-label><input matInput type="number" [(ngModel)]="newProduct.storeId" /></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Categoría ID</mat-label><input matInput type="number" [(ngModel)]="newProduct.categoryProductId" /></mat-form-field>
+  @if (showForm()) {
+    <div class="card"><div class="card-header"><h3>Nuevo Producto</h3></div>
+      <div class="form-grid">
+        <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newProduct.name" /></div>
+        <div><label class="form-label">Precio</label><input class="form-control" type="number" [(ngModel)]="newProduct.price" /></div>
+        <div><label class="form-label">Tienda ID</label><input class="form-control" type="number" [(ngModel)]="newProduct.storeId" /></div>
+        <div><label class="form-label">Categoría ID</label><input class="form-control" type="number" [(ngModel)]="newProduct.categoryProductId" /></div>
       </div>
-    </mat-card-content>
-    <mat-card-actions><button mat-flat-button color="primary" (click)="create()">Guardar Producto</button></mat-card-actions>
-  </mat-card>
-}
+      <button class="btn btn-success mt-3" (click)="create()">Guardar Producto</button>
+    </div>
+  }
 
-<mat-card appearance="outlined" style="margin-bottom: 1rem;">
-  <mat-card-content>
-    <mat-form-field appearance="outline" style="width: 300px;">
-      <mat-label>Filtrar por tienda</mat-label>
-      <mat-select [(ngModel)]="filterStoreId" (selectionChange)="loadProducts()">
-        <mat-option [value]="0">Todas las tiendas</mat-option>
-        @for (store of stores(); track store.id) { <mat-option [value]="store.id">{{ store.name }}</mat-option> }
-      </mat-select>
-    </mat-form-field>
-  </mat-card-content>
-</mat-card>
+  <div class="card mb-3">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span class="fw-medium">Filtrar por tienda:</span>
+      <select class="form-select" style="width:250px;" [(ngModel)]="filterStoreId" (change)="loadProducts()">
+        <option [ngValue]="0">Todas las tiendas</option>
+        @for (s of stores(); track s.id) { <option [ngValue]="s.id">{{ s.name }}</option> }
+      </select>
+    </div>
+  </div>
 
-@if (loading()) {
-  <div class="loading">Cargando...</div>
-} @else if (products().length === 0) {
-  <div class="empty-state"><h3>No hay productos</h3></div>
-} @else {
-  <mat-card appearance="outlined">
-    <table mat-table [dataSource]="products()">
-      <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let p">#{{ p.id }}</td></ng-container>
-      <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Producto</th><td mat-cell *matCellDef="let p">{{ p.name }}</td></ng-container>
-      <ng-container matColumnDef="price"><th mat-header-cell *matHeaderCellDef>Precio</th><td mat-cell *matCellDef="let p" style="color:var(--success);font-weight:600">${{ p.price.toLocaleString('es-CO') }}</td></ng-container>
-      <ng-container matColumnDef="store"><th mat-header-cell *matHeaderCellDef>Tienda</th><td mat-cell *matCellDef="let p">{{ p.storeName || 'N/A' }}</td></ng-container>
-      <ng-container matColumnDef="category"><th mat-header-cell *matHeaderCellDef>Categoría</th><td mat-cell *matCellDef="let p"><span class="badge badge-green">{{ p.categoryProductDescription || 'N/A' }}</span></td></ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card>
-}
+  @if (loading()) { <div class="loading">Cargando...</div> }
+  @else if (products().length === 0) { <div class="empty-state"><h3>No hay productos</h3></div> }
+  @else {
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="table table-hover">
+        <thead><tr><th>ID</th><th>Producto</th><th>Precio</th><th>Tienda</th><th>Categoría</th></tr></thead>
+        <tbody>
+          @for (p of products(); track p.id) {
+            <tr>
+              <td class="text-muted">#{{ p.id }}</td><td class="fw-medium">{{ p.name }}</td>
+              <td class="fw-semibold text-success">${{ p.price.toLocaleString('es-CO') }}</td>
+              <td>{{ p.storeName || 'N/A' }}</td>
+              <td><span class="badge badge-success">{{ p.categoryProductDescription || 'N/A' }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

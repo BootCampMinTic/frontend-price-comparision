@@ -1,61 +1,48 @@
-<div class="page-header"><h1>Clientes</h1><button mat-flat-button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Cliente' }}</button></div>
+<div class="content">
+  <div class="page-header"><h1>Clientes</h1>
+    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Cliente' }}</button>
+  </div>
 
-<mat-tab-group style="margin-bottom: 1rem;">
-  <mat-tab label="Persona Natural">
-    @if (showForm()) {
-      <mat-card appearance="outlined" style="margin: 1rem 0;">
-        <mat-card-header><mat-card-title>Nuevo Cliente Natural</mat-card-title></mat-card-header>
-        <mat-card-content>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <mat-form-field appearance="outline"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="newNatural.name" /></mat-form-field>
-            <mat-form-field appearance="outline"><mat-label>Apellido</mat-label><input matInput [(ngModel)]="newNatural.lastName" /></mat-form-field>
-            <mat-form-field appearance="outline"><mat-label>Documento</mat-label><input matInput [(ngModel)]="newNatural.documentNumber" /></mat-form-field>
-            <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput [(ngModel)]="newNatural.electronicInvoiceEmail" /></mat-form-field>
-          </div>
-        </mat-card-content>
-        <mat-card-actions><button mat-flat-button color="primary" (click)="createNatural()">Guardar</button></mat-card-actions>
-      </mat-card>
-    }
-    @if (loading()) { <div class="loading">Cargando...</div> }
-    @else {
-      <mat-card appearance="outlined">
-        <table mat-table [dataSource]="naturalClients()">
-          <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let c">#{{ c.id }}</td></ng-container>
-          <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let c">{{ c.name }}</td></ng-container>
-          <ng-container matColumnDef="lastName"><th mat-header-cell *matHeaderCellDef>Apellido</th><td mat-cell *matCellDef="let c">{{ c.lastName }}</td></ng-container>
-          <ng-container matColumnDef="documentNumber"><th mat-header-cell *matHeaderCellDef>Documento</th><td mat-cell *matCellDef="let c" style="font-family:monospace">{{ c.documentNumber }}</td></ng-container>
-          <ng-container matColumnDef="email"><th mat-header-cell *matHeaderCellDef>Email</th><td mat-cell *matCellDef="let c">{{ c.electronicInvoiceEmail }}</td></ng-container>
-          <tr mat-header-row *matHeaderRowDef="naturalColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: naturalColumns;"></tr>
+  <div class="nav-tabs mb-3">
+    <button class="nav-tab" [class.active]="activeTab()==='natural'" (click)="activeTab.set('natural')">Persona Natural</button>
+    <button class="nav-tab" [class.active]="activeTab()==='legal'" (click)="activeTab.set('legal')">Persona Jurídica</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="card">
+      <div class="card-header"><h3>Nuevo Cliente {{ activeTab()==='natural'?'Natural':'Jurídico' }}</h3></div>
+      @if (activeTab()==='natural') {
+        <div class="form-grid">
+          <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newNatural.name" /></div>
+          <div><label class="form-label">Apellido</label><input class="form-control" [(ngModel)]="newNatural.lastName" /></div>
+          <div><label class="form-label">Documento</label><input class="form-control" [(ngModel)]="newNatural.documentNumber" /></div>
+          <div><label class="form-label">Email</label><input class="form-control" [(ngModel)]="newNatural.electronicInvoiceEmail" /></div>
+        </div>
+        <button class="btn btn-success mt-3" (click)="createNatural()">Guardar Cliente</button>
+      } @else {
+        <div class="form-grid">
+          <div><label class="form-label">Empresa</label><input class="form-control" [(ngModel)]="newLegal.companyName" /></div>
+          <div><label class="form-label">NIT</label><input class="form-control" [(ngModel)]="newLegal.documentNumber" /></div>
+        </div>
+        <button class="btn btn-success mt-3" (click)="createLegal()">Guardar Cliente</button>
+      }
+    </div>
+  }
+
+  @if (loading()) { <div class="loading">Cargando...</div> }
+  @else {
+    <div class="card" style="padding:0;overflow:hidden;">
+      @if (activeTab()==='natural') {
+        <table class="table table-hover">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Apellido</th><th>Documento</th><th>Email</th></tr></thead>
+          <tbody>@for(c of naturalClients();track c.id){<tr><td class="text-muted">#{{c.id}}</td><td class="fw-medium">{{c.name}}</td><td>{{c.lastName}}</td><td style="font-family:monospace">{{c.documentNumber}}</td><td>{{c.electronicInvoiceEmail}}</td></tr>}</tbody>
         </table>
-      </mat-card>
-    }
-  </mat-tab>
-  <mat-tab label="Persona Jurídica">
-    @if (showForm()) {
-      <mat-card appearance="outlined" style="margin: 1rem 0;">
-        <mat-card-header><mat-card-title>Nuevo Cliente Jurídico</mat-card-title></mat-card-header>
-        <mat-card-content>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <mat-form-field appearance="outline"><mat-label>Empresa</mat-label><input matInput [(ngModel)]="newLegal.companyName" /></mat-form-field>
-            <mat-form-field appearance="outline"><mat-label>NIT</mat-label><input matInput [(ngModel)]="newLegal.documentNumber" /></mat-form-field>
-          </div>
-        </mat-card-content>
-        <mat-card-actions><button mat-flat-button color="primary" (click)="createLegal()">Guardar</button></mat-card-actions>
-      </mat-card>
-    }
-    @if (loading()) { <div class="loading">Cargando...</div> }
-    @else {
-      <mat-card appearance="outlined">
-        <table mat-table [dataSource]="legalClients()">
-          <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let c">#{{ c.id }}</td></ng-container>
-          <ng-container matColumnDef="companyName"><th mat-header-cell *matHeaderCellDef>Empresa</th><td mat-cell *matCellDef="let c">{{ c.companyName }}</td></ng-container>
-          <ng-container matColumnDef="documentNumber"><th mat-header-cell *matHeaderCellDef>NIT</th><td mat-cell *matCellDef="let c" style="font-family:monospace">{{ c.documentNumber }}</td></ng-container>
-          <ng-container matColumnDef="email"><th mat-header-cell *matHeaderCellDef>Email</th><td mat-cell *matCellDef="let c">{{ c.electronicInvoiceEmail }}</td></ng-container>
-          <tr mat-header-row *matHeaderRowDef="legalColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: legalColumns;"></tr>
+      } @else {
+        <table class="table table-hover">
+          <thead><tr><th>ID</th><th>Empresa</th><th>NIT</th><th>Email</th></tr></thead>
+          <tbody>@for(c of legalClients();track c.id){<tr><td class="text-muted">#{{c.id}}</td><td class="fw-medium">{{c.companyName}}</td><td style="font-family:monospace">{{c.documentNumber}}</td><td>{{c.electronicInvoiceEmail}}</td></tr>}</tbody>
         </table>
-      </mat-card>
-    }
-  </mat-tab>
-</mat-tab-group>
+      }
+    </div>
+  }
+</div>

@@ -1,23 +1,23 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav mode="side" opened class="sidenav">
-    <mat-toolbar color="primary" class="sidenav-header">
-      <span>Precios</span>
-    </mat-toolbar>
-    <mat-nav-list>
+<div class="wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span>⚡</span> Precios
+    </div>
+    <nav class="sidebar-nav">
       @for (item of navItems; track item.path) {
-        <a mat-list-item
-           [routerLink]="item.path"
-           routerLinkActive="active-link"
-           [routerLinkActiveOptions]="{ exact: item.path === '/' }">
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+          class="nav-link">
+          <span class="icon">{{ item.icon }}</span>
+          {{ item.label }}
         </a>
       }
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <main class="content">
-      <router-outlet />
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    </nav>
+    <div class="sidebar-footer">Price Comparison v1.0</div>
+  </aside>
+  <div class="main-content">
+    <router-outlet />
+  </div>
+</div>

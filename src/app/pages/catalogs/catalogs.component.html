@@ -1,42 +1,20 @@
-<div class="page-header"><h1>Catálogos</h1></div>
+<div class="content">
+  <div class="page-header"><h1>Catálogos</h1></div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-  <mat-card appearance="outlined">
-    <mat-card-header><mat-card-title>Estados</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <mat-chip-set>@for (s of states(); track s.id) {<mat-chip>{{ s.description }}</mat-chip>}</mat-chip-set>
-    </mat-card-content>
-  </mat-card>
-  <mat-card appearance="outlined">
-    <mat-card-header><mat-card-title>Tipos de Usuario</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <mat-chip-set>@for (t of typeUsers(); track t.id) {<mat-chip>{{ t.description }}</mat-chip>}</mat-chip-set>
-    </mat-card-content>
-  </mat-card>
-  <mat-card appearance="outlined">
-    <mat-card-header><mat-card-title>Categorías Producto</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <mat-chip-set>@for (c of catProducts(); track c.id) {<mat-chip>{{ c.description }}</mat-chip>}</mat-chip-set>
-    </mat-card-content>
-  </mat-card>
-  <mat-card appearance="outlined">
-    <mat-card-header><mat-card-title>Categorías Tienda</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <mat-chip-set>@for (c of catStores(); track c.id) {<mat-chip>{{ c.description }}</mat-chip>}</mat-chip-set>
-    </mat-card-content>
-  </mat-card>
-</div>
+  <div class="row g-3 mb-3">
+    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Estados</h3></div><div class="d-flex flex-wrap gap-2">@for(s of states();track s.id){<span class="badge badge-warning">{{s.description}}</span>}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Tipos de Usuario</h3></div><div class="d-flex flex-wrap gap-2">@for(t of typeUsers();track t.id){<span class="badge badge-info">{{t.description}}</span>}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Categorías Producto</h3></div><div class="d-flex flex-wrap gap-2">@for(c of catProducts();track c.id){<span class="badge badge-success">{{c.description}}</span>}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Categorías Tienda</h3></div><div class="d-flex flex-wrap gap-2">@for(c of catStores();track c.id){<span class="badge badge-primary">{{c.description}}</span>}</div></div></div>
+  </div>
 
-<mat-card appearance="outlined">
-  <mat-card-header><mat-card-title>Tipos de Documento</mat-card-title></mat-card-header>
-  <mat-card-content>
-    <table mat-table [dataSource]="docTypes()">
-      <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let d">#{{ d.id }}</td></ng-container>
-      <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let d">{{ d.name }}</td></ng-container>
-      <ng-container matColumnDef="code"><th mat-header-cell *matHeaderCellDef>Código</th><td mat-cell *matCellDef="let d"><span class="badge badge-gray">{{ d.documentType }}</span></td></ng-container>
-      <ng-container matColumnDef="regex"><th mat-header-cell *matHeaderCellDef>Regex</th><td mat-cell *matCellDef="let d" style="font-family:monospace;font-size:0.8rem;">{{ d.regex }}</td></ng-container>
-      <tr mat-header-row *matHeaderRowDef="docColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: docColumns;"></tr>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="card-header" style="padding:1rem 1.5rem;"><h3>Tipos de Documento</h3></div>
+    <table class="table table-hover">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Código</th><th>Regex</th></tr></thead>
+      <tbody>
+        @for(d of docTypes();track d.id){<tr><td class="text-muted">#{{d.id}}</td><td class="fw-medium">{{d.name}}</td><td><span class="badge badge-secondary">{{d.documentType}}</span></td><td style="font-family:monospace;font-size:0.8rem">{{d.regex}}</td></tr>}
+      </tbody>
     </table>
-  </mat-card-content>
-</mat-card>
+  </div>
+</div>

@@ -1,32 +1,29 @@
-<div class="page-header">
-  <h1>Usuarios</h1>
-  <button mat-flat-button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Usuario' }}</button>
-</div>
+<div class="content">
+  <div class="page-header"><h1>Usuarios</h1>
+    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Usuario' }}</button>
+  </div>
 
-@if (showForm()) {
-  <mat-card appearance="outlined" style="margin-bottom: 1rem;">
-    <mat-card-header><mat-card-title>Nuevo Usuario</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
-        <mat-form-field appearance="outline"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="newUser.name" /></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Password</mat-label><input matInput type="password" [(ngModel)]="newUser.password" /></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Tipo ID</mat-label><input matInput type="number" [(ngModel)]="newUser.typeUserId" /></mat-form-field>
+  @if (showForm()) {
+    <div class="card"><div class="card-header"><h3>Nuevo Usuario</h3></div>
+      <div class="form-grid-3">
+        <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newUser.name" /></div>
+        <div><label class="form-label">Password</label><input class="form-control" type="password" [(ngModel)]="newUser.password" /></div>
+        <div><label class="form-label">Tipo ID</label><input class="form-control" type="number" [(ngModel)]="newUser.typeUserId" /></div>
       </div>
-    </mat-card-content>
-    <mat-card-actions><button mat-flat-button color="primary" (click)="create()">Guardar Usuario</button></mat-card-actions>
-  </mat-card>
-}
+      <button class="btn btn-success mt-3" (click)="create()">Guardar Usuario</button>
+    </div>
+  }
 
-@if (loading()) { <div class="loading">Cargando...</div> }
-@else if (users().length === 0) { <div class="empty-state"><h3>No hay usuarios</h3></div> }
-@else {
-  <mat-card appearance="outlined">
-    <table mat-table [dataSource]="users()">
-      <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>ID</th><td mat-cell *matCellDef="let u">#{{ u.id }}</td></ng-container>
-      <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let u">{{ u.name }}</td></ng-container>
-      <ng-container matColumnDef="type"><th mat-header-cell *matHeaderCellDef>Tipo</th><td mat-cell *matCellDef="let u"><span class="badge badge-sky">{{ u.typeUserDescription || 'N/A' }}</span></td></ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card>
-}
+  @if (loading()) { <div class="loading">Cargando...</div> }
+  @else if (users().length === 0) { <div class="empty-state"><h3>No hay usuarios</h3></div> }
+  @else {
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="table table-hover">
+        <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th></tr></thead>
+        <tbody>
+          @for (u of users(); track u.id) { <tr><td class="text-muted">#{{ u.id }}</td><td class="fw-medium">{{ u.name }}</td><td><span class="badge badge-info">{{ u.typeUserDescription || 'N/A' }}</span></td></tr> }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
