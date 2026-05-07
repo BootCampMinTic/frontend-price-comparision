@@ -1,23 +1,23 @@
-<div class="wrapper">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <span>⚡</span> Precios
-    </div>
-    <nav class="sidebar-nav">
-      @for (item of navItems; track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-          class="nav-link">
-          <span class="icon">{{ item.icon }}</span>
-          {{ item.label }}
-        </a>
-      }
-    </nav>
-    <div class="sidebar-footer">Price Comparison v1.0</div>
-  </aside>
+<div class="app-layout">
+  <app-sidebar [items]="navItems" [open]="sidebarOpen" (toggleSidebar)="toggleSidebar()" />
+
   <div class="main-content">
-    <router-outlet />
+    <p-toolbar>
+      <ng-template #start>
+        <p-button
+          icon="pi pi-bars"
+          severity="secondary"
+          variant="text"
+          (onClick)="toggleSidebar()"
+          class="sidebar-toggle" />
+      </ng-template>
+    </p-toolbar>
+
+    <div class="content-area">
+      <router-outlet />
+    </div>
   </div>
 </div>
+
+<p-toast />
+<p-confirmDialog />

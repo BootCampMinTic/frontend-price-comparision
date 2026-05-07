@@ -1,0 +1,27 @@
+[33m❯[39m Building...
+[32m✔[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m            [2m | [22m[36m388.20 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m              [2m | [22m  [36m6.38 kB[39m[2m | [22m
+[32mchunk-XZ453NGR.js[39m  [2m | [22m[2m-[22m                 [2m | [22m  [36m1.09 kB[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m     [2m | [22m[1m395.67 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mchunk-72H3USMN.js[39m  [2m | [22m[2mclients-component[22m [2m | [22m [36m22.95 kB[39m[2m | [22m
+[32mchunk-IMSN5VLK.js[39m  [2m | [22m[2msales-component[22m   [2m | [22m [36m18.15 kB[39m[2m | [22m
+[32mchunk-MTMXPGIW.js[39m  [2m | [22m[2mproducts-component[22m[2m | [22m [36m16.31 kB[39m[2m | [22m
+[32mchunk-3TK3HYFI.js[39m  [2m | [22m[2mcatalogs-component[22m[2m | [22m [36m15.72 kB[39m[2m | [22m
+[32mchunk-5PJCWM4V.js[39m  [2m | [22m[2mstores-component[22m  [2m | [22m [36m13.34 kB[39m[2m | [22m
+[32mchunk-KAIGPR4N.js[39m  [2m | [22m[2musers-component[22m   [2m | [22m [36m11.53 kB[39m[2m | [22m
+[32mchunk-7NLAJHXH.js[39m  [2m | [22m[2mhome-component[22m    [2m | [22m  [36m7.09 kB[39m[2m | [22m
+[32mchunk-QX5ZPNZX.js[39m  [2m | [22m[2m-[22m                 [2m | [22m  [36m1.44 kB[39m[2m | [22m
+[32mchunk-JIDKZ44R.js[39m  [2m | [22m[2m-[22m                 [2m | [22m  [36m1.21 kB[39m[2m | [22m
+[32mchunk-YXPNPSPJ.js[39m  [2m | [22m[2m-[22m                 [2m | [22m  [36m1.20 kB[39m[2m | [22m
+[32mchunk-OVLM5YEA.js[39m  [2m | [22m[2m-[22m                 [2m | [22m  [36m1.08 kB[39m[2m | [22m
+
+Application bundle generation complete. [2.165 seconds] - 2026-05-07T13:58:35.376Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m

@@ -1,29 +1,71 @@
-<div class="content">
-  <div class="page-header"><h1>Usuarios</h1>
-    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Usuario' }}</button>
+<app-page-header title="Usuarios" subtitle="Gestion de usuarios del sistema" createLabel="Nuevo usuario" (create)="openCreate()" />
+
+@if (loading() && users().length === 0) {
+  <p-card><p-progressSpinner /></p-card>
+} @else if (!loading() && users().length === 0) {
+  <app-empty-state
+    icon="pi pi-users"
+    title="No hay usuarios"
+    description="Crea el primer usuario"
+    actionLabel="Nuevo usuario"
+    (action)="openCreate()" />
+} @else {
+  <p-card>
+    <p-table
+      [value]="users()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      sortField="name"
+      [sortOrder]="1"
+      styleClass="p-datatable-sm"
+      responsiveLayout="scroll">
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+          <th pSortableColumn="name">Nombre <p-sortIcon field="name" /></th>
+          <th pSortableColumn="typeUserDescription">Tipo <p-sortIcon field="typeUserDescription" /></th>
+          <th style="width: 8rem;">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-user>
+        <tr>
+          <td>{{ user.id }}</td>
+          <td><strong>{{ user.name }}</strong></td>
+          <td><p-tag [value]="user.typeUserDescription || getTypeName(user.typeUserId)" severity="info" /></td>
+          <td>
+            <div style="display: flex; gap: 0.25rem;">
+              <p-button icon="pi pi-pencil" severity="secondary" variant="text" size="small" rounded (onClick)="openEdit(user)" />
+              <p-button icon="pi pi-trash" severity="danger" variant="text" size="small" rounded (onClick)="confirmDelete(user)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+}
+
+<p-dialog
+  [header]="isEditing() ? 'Editar usuario' : 'Nuevo usuario'"
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [modal]="true"
+  [style]="{ width: '450px' }">
+  <div style="margin-bottom: 1rem;">
+    <label class="form-label">Nombre</label>
+    <input pInputText [(ngModel)]="form.name" class="w-full" />
   </div>
-
-  @if (showForm()) {
-    <div class="card"><div class="card-header"><h3>Nuevo Usuario</h3></div>
-      <div class="form-grid-3">
-        <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newUser.name" /></div>
-        <div><label class="form-label">Password</label><input class="form-control" type="password" [(ngModel)]="newUser.password" /></div>
-        <div><label class="form-label">Tipo ID</label><input class="form-control" type="number" [(ngModel)]="newUser.typeUserId" /></div>
-      </div>
-      <button class="btn btn-success mt-3" (click)="create()">Guardar Usuario</button>
-    </div>
-  }
-
-  @if (loading()) { <div class="loading">Cargando...</div> }
-  @else if (users().length === 0) { <div class="empty-state"><h3>No hay usuarios</h3></div> }
-  @else {
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="table table-hover">
-        <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th></tr></thead>
-        <tbody>
-          @for (u of users(); track u.id) { <tr><td class="text-muted">#{{ u.id }}</td><td class="fw-medium">{{ u.name }}</td><td><span class="badge badge-info">{{ u.typeUserDescription || 'N/A' }}</span></td></tr> }
-        </tbody>
-      </table>
-    </div>
-  }
-</div>
+  <div style="margin-bottom: 1rem;">
+    <label class="form-label">{{ isEditing() ? 'Nueva contrasena (dejar vacia para no cambiar)' : 'Contrasena' }}</label>
+    <input pInputText type="password" [(ngModel)]="form.password" class="w-full" />
+  </div>
+  <div style="margin-bottom: 1.5rem;">
+    <label class="form-label">Tipo de usuario</label>
+    <p-select [options]="typeOptions" [(ngModel)]="form.typeUserId" class="w-full" />
+  </div>
+  <ng-template #footer>
+    <p-button label="Cancelar" severity="secondary" variant="text" (onClick)="dialogVisible.set(false)" />
+    <p-button [label]="isEditing() ? 'Guardar' : 'Crear'" (onClick)="save()" [disabled]="!form.name" />
+  </ng-template>
+</p-dialog>

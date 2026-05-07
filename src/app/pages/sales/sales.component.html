@@ -1,56 +1,151 @@
-<div class="content">
-  <div class="page-header"><h1>Ventas</h1>
-    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nueva Venta' }}</button>
-  </div>
+<app-page-header title="Ventas" subtitle="Registro de ventas" createLabel="Nueva venta" (create)="openCreate()" />
 
-  @if (showForm()) {
-    <div class="card"><div class="card-header"><h3>Nueva Venta</h3></div>
-      <div class="form-grid-3 mb-3">
-        <div><label class="form-label">Usuario ID</label><input class="form-control" type="number" [(ngModel)]="newSale.userId" /></div>
-        <div><label class="form-label">Tienda ID</label><input class="form-control" type="number" [(ngModel)]="newSale.storeId" /></div>
-        <div><label class="form-label">Estado ID</label><input class="form-control" type="number" [(ngModel)]="newSale.stateId" /></div>
-      </div>
-      <h4 class="fw-semibold" style="font-size:0.9rem;">Seleccionar Productos</h4>
-      <div style="max-height:300px;overflow-y:auto;border:1px solid #dee2e6;border-radius:8px;" class="mb-3">
-        <table class="table table-sm">
-          <tbody>
-            @for (p of products(); track p.id) {
-              <tr><td style="width:40px"><input type="checkbox" class="form-check-input" [checked]="newSale.productIds.includes(p.id)" (change)="toggleProduct(p.id)" /></td><td>{{ p.name }}</td><td class="text-end text-success fw-semibold">${{ p.price.toLocaleString('es-CO') }}</td></tr>
+@if (loading() && sales().length === 0) {
+  <p-card><p-progressSpinner /></p-card>
+} @else if (!loading() && sales().length === 0) {
+  <app-empty-state
+    icon="pi pi-dollar"
+    title="No hay ventas"
+    description="Registra la primera venta"
+    actionLabel="Nueva venta"
+    (action)="openCreate()" />
+} @else {
+  <p-card>
+    <p-table
+      [value]="sales()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      sortField="date"
+      [sortOrder]="-1"
+      styleClass="p-datatable-sm"
+      responsiveLayout="scroll">
+      <ng-template #header>
+        <tr>
+          <th style="width: 3rem;"></th>
+          <th pSortableColumn="id"># <p-sortIcon field="id" /></th>
+          <th pSortableColumn="date">Fecha <p-sortIcon field="date" /></th>
+          <th pSortableColumn="userName">Usuario <p-sortIcon field="userName" /></th>
+          <th pSortableColumn="storeName">Tienda <p-sortIcon field="storeName" /></th>
+          <th pSortableColumn="stateDescription">Estado <p-sortIcon field="stateDescription" /></th>
+          <th>Productos</th>
+          <th style="width: 6rem;">Total</th>
+          <th style="width: 4rem;">Acc.</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-sale>
+        <tr (click)="toggleExpand(sale.id)" style="cursor: pointer;">
+          <td>
+            <i [class]="isExpanded(sale.id) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+               style="color: var(--p-primary-color); font-size: 0.85rem;"></i>
+          </td>
+          <td><strong>#{{ sale.id }}</strong></td>
+          <td>{{ sale.date | date:'mediumDate' }}</td>
+          <td>{{ sale.userName || '-' }}</td>
+          <td>{{ sale.storeName || '-' }}</td>
+          <td>
+            <p-tag
+              [value]="sale.stateDescription || '-'"
+              [severity]="sale.stateDescription === 'pedido' ? 'warn' : sale.stateDescription === 'pagado' ? 'success' : 'info'" />
+          </td>
+          <td>
+            @if (sale.products?.length) {
+              <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                @for (product of sale.products; track product.id) {
+                  <span style="font-size: 0.8rem; background: var(--p-surface-100); padding: 0.15rem 0.5rem; border-radius: 4px;">
+                    {{ product.productName }}
+                  </span>
+                }
+              </div>
+            } @else {
+              <span style="font-size: 0.8rem; color: var(--p-text-muted-color);">-</span>
             }
-          </tbody>
-        </table>
-      </div>
-      <button class="btn btn-success" (click)="create()">Crear Venta</button>
-    </div>
-  }
-
-  @if (loading()) { <div class="loading">Cargando...</div> }
-  @else if (sales().length === 0) { <div class="empty-state"><h3>No hay ventas</h3></div> }
-  @else {
-    @for (sale of sales(); track sale.id) {
-      <div class="accordion-item">
-        <div class="accordion-header" (click)="toggleExpand(sale.id)" style="cursor:pointer;">
-          <div>
-            <span class="fw-semibold">Venta #{{ sale.id }}</span>
-            <span style="margin-left:0.75rem;color:#6c757d;font-size:0.85rem;">{{ sale.date | date:'medium' }}</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <span class="badge badge-warning">{{ sale.stateDescription }}</span>
-            <span>{{ expandedSale() === sale.id ? '▲' : '▼' }}</span>
-          </div>
-        </div>
-        @if (expandedSale() === sale.id) {
-          <div style="padding:1rem;">
-            <p class="text-muted mb-2">👤 {{ sale.userName }} · 🏪 {{ sale.storeName }}</p>
-            <table class="table table-sm">
-              <thead><tr><th>Producto</th><th class="text-end">Precio</th></tr></thead>
-              <tbody>
-                @for (ps of sale.products; track ps.id) { <tr><td>{{ ps.productName }}</td><td class="text-end text-success fw-semibold">${{ ps.productPrice.toLocaleString('es-CO') }}</td></tr> }
-              </tbody>
-            </table>
-          </div>
+          </td>
+          <td><strong>$ {{ getSaleTotal(sale) | number:'1.0-0' }}</strong></td>
+          <td (click)="$event.stopPropagation()">
+            <p-button icon="pi pi-trash" severity="danger" variant="text" size="small" rounded (onClick)="confirmDelete(sale)" />
+          </td>
+        </tr>
+        @if (isExpanded(sale.id)) {
+          <tr>
+            <td colspan="9" style="padding: 0; background: var(--p-surface-ground);">
+              <div style="padding: 1rem 1.5rem 1.5rem 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h4 style="font-size: 0.9rem; font-weight: 600; margin: 0;">
+                    <i class="pi pi-box" style="margin-right: 0.5rem; color: var(--p-primary-color);"></i>
+                    Detalle de productos — Venta #{{ sale.id }}
+                  </h4>
+                  <p-tag [value]="(sale.products?.length || 0) + ' producto(s)'" severity="info" style="font-size: 0.8rem;" />
+                </div>
+                @if (sale.products?.length) {
+                  <table style="width: 100%; border-collapse: collapse; background: var(--p-surface-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--p-surface-border);">
+                    <thead>
+                      <tr style="background: var(--p-surface-100);">
+                        <th style="padding: 0.5rem 1rem; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--p-text-muted-color); width: 3rem;">#</th>
+                        <th style="padding: 0.5rem 1rem; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--p-text-muted-color);">Producto</th>
+                        <th style="padding: 0.5rem 1rem; text-align: right; font-size: 0.8rem; font-weight: 600; color: var(--p-text-muted-color); width: 10rem;">Precio</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (sp of sale.products; track sp.id; let i = $index) {
+                        <tr style="border-top: 1px solid var(--p-surface-border);">
+                          <td style="padding: 0.5rem 1rem; font-size: 0.85rem; color: var(--p-text-muted-color);">{{ i + 1 }}</td>
+                          <td style="padding: 0.5rem 1rem; font-size: 0.85rem;">{{ sp.productName }}</td>
+                          <td style="padding: 0.5rem 1rem; font-size: 0.85rem; text-align: right; font-weight: 600;">$ {{ sp.productPrice | number:'1.0-0' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                    <tfoot>
+                      <tr style="border-top: 2px solid var(--p-surface-border); background: var(--p-surface-100);">
+                        <td colspan="2" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; text-align: right;">Total</td>
+                        <td style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; text-align: right; color: var(--p-primary-color);">$ {{ getSaleTotal(sale) | number:'1.0-0' }}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                } @else {
+                  <div style="text-align: center; padding: 2rem; color: var(--p-text-muted-color);">
+                    <i class="pi pi-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                    Esta venta no tiene productos registrados
+                  </div>
+                }
+              </div>
+            </td>
+          </tr>
         }
-      </div>
-    }
+      </ng-template>
+    </p-table>
+  </p-card>
+}
+
+<p-dialog
+  header="Nueva venta"
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [modal]="true"
+  [style]="{ width: '550px' }">
+  <div style="margin-bottom: 1.5rem;">
+    <label class="form-label">Seleccionar productos</label>
+    <p-multiSelect
+      [options]="productOptions"
+      [(ngModel)]="form.productIds"
+      [showToggleAll]="false"
+      placeholder="Selecciona productos..."
+      class="w-full"
+      display="chip" />
+  </div>
+  @if (form.productIds.length) {
+    <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 1rem;">
+      @for (pid of form.productIds; track pid) {
+        <p-tag [value]="getProductName(pid)" severity="info" />
+      }
+    </div>
+    <p style="color: var(--p-text-muted-color); font-size: 0.85rem;">
+      {{ form.productIds.length }} producto(s) — Total: <strong>$ {{ getEstimatedTotal() | number:'1.0-0' }}</strong>
+    </p>
   }
-</div>
+  <ng-template #footer>
+    <p-button label="Cancelar" severity="secondary" variant="text" (onClick)="dialogVisible.set(false)" />
+    <p-button label="Registrar venta" (onClick)="save()" [disabled]="form.productIds.length === 0" />
+  </ng-template>
+</p-dialog>

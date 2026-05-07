@@ -27,11 +27,6 @@ export const routes: Routes = [
     title: 'Usuarios',
   },
   {
-    path: 'clients',
-    loadComponent: () => import('./pages/clients/clients.component').then((m) => m.ClientsComponent),
-    title: 'Clientes',
-  },
-  {
     path: 'catalogs',
     loadComponent: () => import('./pages/catalogs/catalogs.component').then((m) => m.CatalogsComponent),
     title: 'Catálogos',

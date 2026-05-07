@@ -20,4 +20,12 @@ export class CategoryProductService {
   create(data: CreateCategoryProduct): Observable<ApiResponse<object>> {
     return this.http.post<ApiResponse<object>>(`${this.base}/category-products`, data);
   }
+
+  update(id: number, data: Partial<CreateCategoryProduct>): Observable<ApiResponse<object>> {
+    return this.http.put<ApiResponse<object>>(`${this.base}/category-products/${id}`, data);
+  }
+
+  delete(id: number): Observable<ApiResponse<object>> {
+    return this.http.delete<ApiResponse<object>>(`${this.base}/category-products/${id}`);
+  }
 }

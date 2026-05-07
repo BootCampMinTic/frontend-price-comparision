@@ -1,20 +1,65 @@
-<div class="content">
-  <div class="page-header"><h1>Catálogos</h1></div>
+<app-page-header title="Catalogos" subtitle="Datos de referencia del sistema" />
 
-  <div class="row g-3 mb-3">
-    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Estados</h3></div><div class="d-flex flex-wrap gap-2">@for(s of states();track s.id){<span class="badge badge-warning">{{s.description}}</span>}</div></div></div>
-    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Tipos de Usuario</h3></div><div class="d-flex flex-wrap gap-2">@for(t of typeUsers();track t.id){<span class="badge badge-info">{{t.description}}</span>}</div></div></div>
-    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Categorías Producto</h3></div><div class="d-flex flex-wrap gap-2">@for(c of catProducts();track c.id){<span class="badge badge-success">{{c.description}}</span>}</div></div></div>
-    <div class="col-md-6"><div class="card"><div class="card-header"><h3>Categorías Tienda</h3></div><div class="d-flex flex-wrap gap-2">@for(c of catStores();track c.id){<span class="badge badge-primary">{{c.description}}</span>}</div></div></div>
+@if (loading()) {
+  <p-card><p-progressSpinner /></p-card>
+} @else {
+  <div class="catalog-grid">
+    <p-card styleClass="catalog-card">
+      <i class="pi pi-map-marker"></i>
+      <h3>Estados</h3>
+      <div class="catalog-count">{{ states().length }}</div>
+    </p-card>
+    <p-card styleClass="catalog-card">
+      <i class="pi pi-id-card"></i>
+      <h3>Tipos de usuario</h3>
+      <div class="catalog-count">{{ typeUsers().length }}</div>
+    </p-card>
+    <p-card styleClass="catalog-card">
+      <i class="pi pi-tag"></i>
+      <h3>Cat. productos</h3>
+      <div class="catalog-count">{{ catProducts().length }}</div>
+    </p-card>
+    <p-card styleClass="catalog-card">
+      <i class="pi pi-warehouse"></i>
+      <h3>Cat. tiendas</h3>
+      <div class="catalog-count">{{ catStores().length }}</div>
+    </p-card>
   </div>
 
-  <div class="card" style="padding:0;overflow:hidden;">
-    <div class="card-header" style="padding:1rem 1.5rem;"><h3>Tipos de Documento</h3></div>
-    <table class="table table-hover">
-      <thead><tr><th>ID</th><th>Nombre</th><th>Código</th><th>Regex</th></tr></thead>
-      <tbody>
-        @for(d of docTypes();track d.id){<tr><td class="text-muted">#{{d.id}}</td><td class="fw-medium">{{d.name}}</td><td><span class="badge badge-secondary">{{d.documentType}}</span></td><td style="font-family:monospace;font-size:0.8rem">{{d.regex}}</td></tr>}
-      </tbody>
-    </table>
-  </div>
-</div>
+  @if (states().length || typeUsers().length || catProducts().length || catStores().length) {
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+      @if (states().length) {
+        <p-card header="Estados">
+          <p-table [value]="states()" styleClass="p-datatable-sm">
+            <ng-template #header><tr><th>ID</th><th>Descripcion</th></tr></ng-template>
+            <ng-template #body let-s><tr><td>{{ s.id }}</td><td>{{ s.description }}</td></tr></ng-template>
+          </p-table>
+        </p-card>
+      }
+      @if (typeUsers().length) {
+        <p-card header="Tipos de usuario">
+          <p-table [value]="typeUsers()" styleClass="p-datatable-sm">
+            <ng-template #header><tr><th>ID</th><th>Descripcion</th></tr></ng-template>
+            <ng-template #body let-t><tr><td>{{ t.id }}</td><td>{{ t.description }}</td></tr></ng-template>
+          </p-table>
+        </p-card>
+      }
+      @if (catProducts().length) {
+        <p-card header="Categorias de productos">
+          <p-table [value]="catProducts()" styleClass="p-datatable-sm">
+            <ng-template #header><tr><th>ID</th><th>Descripcion</th></tr></ng-template>
+            <ng-template #body let-c><tr><td>{{ c.id }}</td><td>{{ c.description }}</td></tr></ng-template>
+          </p-table>
+        </p-card>
+      }
+      @if (catStores().length) {
+        <p-card header="Categorias de tiendas">
+          <p-table [value]="catStores()" styleClass="p-datatable-sm">
+            <ng-template #header><tr><th>ID</th><th>Descripcion</th></tr></ng-template>
+            <ng-template #body let-c><tr><td>{{ c.id }}</td><td>{{ c.description }}</td></tr></ng-template>
+          </p-table>
+        </p-card>
+      }
+    </div>
+  }
+}

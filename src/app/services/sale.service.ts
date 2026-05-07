@@ -22,4 +22,12 @@ export class SaleService {
   create(data: CreateSale): Observable<ApiResponse<object>> {
     return this.http.post<ApiResponse<object>>(`${this.base}/sales`, data);
   }
+
+  update(id: number, data: Partial<CreateSale>): Observable<ApiResponse<object>> {
+    return this.http.put<ApiResponse<object>>(`${this.base}/sales/${id}`, data);
+  }
+
+  delete(id: number): Observable<ApiResponse<object>> {
+    return this.http.delete<ApiResponse<object>>(`${this.base}/sales/${id}`);
+  }
 }

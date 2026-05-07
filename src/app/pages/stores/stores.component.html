@@ -1,32 +1,81 @@
-<div class="content">
-  <div class="page-header"><h1>Tiendas</h1>
-    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nueva Tienda' }}</button>
+<app-page-header title="Tiendas" subtitle="Gestion de establecimientos" createLabel="Nueva tienda" (create)="openCreate()" />
+
+@if (loading() && stores().length === 0) {
+  <p-card><p-progressSpinner /></p-card>
+} @else if (!loading() && stores().length === 0) {
+  <app-empty-state
+    icon="pi pi-shop"
+    title="No hay tiendas"
+    description="Crea la primera tienda para empezar"
+    actionLabel="Nueva tienda"
+    (action)="openCreate()" />
+} @else {
+  <p-card>
+    <p-table
+      [value]="stores()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      sortField="name"
+      [sortOrder]="1"
+      styleClass="p-datatable-sm"
+      responsiveLayout="scroll">
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+          <th pSortableColumn="name">Nombre <p-sortIcon field="name" /></th>
+          <th pSortableColumn="address">Direccion <p-sortIcon field="address" /></th>
+          <th>Telefono</th>
+          <th>Categoria</th>
+          <th style="width: 8rem;">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-store>
+        <tr>
+          <td>{{ store.id }}</td>
+          <td><strong>{{ store.name }}</strong></td>
+          <td>{{ store.address }}</td>
+          <td>{{ store.phone || '-' }}</td>
+          <td><p-tag [value]="getCategoryName(store.categoryStoreId)" severity="info" /></td>
+          <td>
+            <div style="display: flex; gap: 0.25rem;">
+              <p-button icon="pi pi-pencil" severity="secondary" variant="text" size="small" rounded (onClick)="openEdit(store)" />
+              <p-button icon="pi pi-trash" severity="danger" variant="text" size="small" rounded (onClick)="confirmDelete(store)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+}
+
+<p-dialog
+  [header]="isEditing() ? 'Editar tienda' : 'Nueva tienda'"
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [modal]="true"
+  [style]="{ width: '500px' }">
+  <div class="form-grid" style="margin-bottom: 1rem;">
+    <div>
+      <label class="form-label">Nombre</label>
+      <input pInputText [(ngModel)]="form.name" class="w-full" />
+    </div>
+    <div>
+      <label class="form-label">Telefono</label>
+      <input pInputText [(ngModel)]="form.phone" class="w-full" />
+    </div>
   </div>
-
-  @if (showForm()) {
-    <div class="card"><div class="card-header"><h3>Nueva Tienda</h3></div>
-      <div class="form-grid">
-        <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newStore.name" /></div>
-        <div><label class="form-label">Dirección</label><input class="form-control" [(ngModel)]="newStore.address" /></div>
-        <div><label class="form-label">Teléfono</label><input class="form-control" [(ngModel)]="newStore.phone" /></div>
-        <div><label class="form-label">Categoría ID</label><input class="form-control" type="number" [(ngModel)]="newStore.categoryStoreId" /></div>
-      </div>
-      <button class="btn btn-success mt-3" (click)="create()">Guardar Tienda</button>
-    </div>
-  }
-
-  @if (loading()) { <div class="loading">Cargando...</div> }
-  @else if (stores().length === 0) { <div class="empty-state"><h3>No hay tiendas</h3><p>Crea la primera tienda</p></div> }
-  @else {
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="table table-hover">
-        <thead><tr><th>ID</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Categoría</th></tr></thead>
-        <tbody>
-          @for (s of stores(); track s.id) {
-            <tr><td class="text-muted">#{{ s.id }}</td><td class="fw-medium">{{ s.name }}</td><td>{{ s.address }}</td><td>{{ s.phone || '-' }}</td><td><span class="badge badge-primary">{{ s.categoryStoreDescription || 'N/A' }}</span></td></tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
-</div>
+  <div style="margin-bottom: 1.5rem;">
+    <label class="form-label">Direccion</label>
+    <input pInputText [(ngModel)]="form.address" class="w-full" />
+  </div>
+  <div>
+    <label class="form-label">Categoria</label>
+    <p-select [options]="categoryOptions" [(ngModel)]="form.categoryStoreId" class="w-full" />
+  </div>
+  <ng-template #footer>
+    <p-button label="Cancelar" severity="secondary" variant="text" (onClick)="dialogVisible.set(false)" />
+    <p-button [label]="isEditing() ? 'Guardar' : 'Crear'" (onClick)="save()" [disabled]="!form.name || !form.address" />
+  </ng-template>
+</p-dialog>

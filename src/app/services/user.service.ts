@@ -20,4 +20,12 @@ export class UserService {
   create(data: CreateUser): Observable<ApiResponse<object>> {
     return this.http.post<ApiResponse<object>>(`${this.base}/users`, data);
   }
+
+  update(id: number, data: Partial<CreateUser>): Observable<ApiResponse<object>> {
+    return this.http.put<ApiResponse<object>>(`${this.base}/users/${id}`, data);
+  }
+
+  delete(id: number): Observable<ApiResponse<object>> {
+    return this.http.delete<ApiResponse<object>>(`${this.base}/users/${id}`);
+  }
 }

@@ -1,19 +1,52 @@
-<div class="content">
-  <div class="page-header"><h1>Dashboard</h1></div>
+<div class="stats-grid">
+  @for (stat of stats(); track stat.label) {
+    @if (loading()) {
+      <p-card styleClass="stat-card">
+        <p-skeleton width="3rem" height="3rem" borderRadius="50%" />
+        <p-skeleton width="60%" height="2rem" styleClass="mt-3" />
+        <p-skeleton width="40%" height="1rem" styleClass="mt-2" />
+      </p-card>
+    } @else {
+      <a [routerLink]="stat.route" style="text-decoration: none; color: inherit;">
+        <p-card styleClass="stat-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <div class="stat-number" [style.color]="stat.color">{{ stat.value }}</div>
+              <div class="stat-label" style="margin-top: 0.25rem; color: var(--p-text-muted-color); font-size: 0.85rem;">
+                {{ stat.label }}
+              </div>
+            </div>
+            <i [class]="stat.icon" class="stat-icon" [style.color]="stat.color"></i>
+          </div>
+        </p-card>
+      </a>
+    }
+  }
+</div>
 
-  <div class="stats-grid">
-    <a routerLink="/stores" class="stat-card"><div class="stat-number">{{ stores() }}</div><div class="stat-label">Tiendas</div></a>
-    <a routerLink="/products" class="stat-card"><div class="stat-number">{{ products() }}</div><div class="stat-label">Productos</div></a>
-    <a routerLink="/sales" class="stat-card"><div class="stat-number">{{ sales() }}</div><div class="stat-label">Ventas</div></a>
-    <a routerLink="/users" class="stat-card"><div class="stat-number">{{ users() }}</div><div class="stat-label">Usuarios</div></a>
-  </div>
-
-  <div class="card">
-    <div class="card-header"><h3>Bienvenido a Price Comparison</h3></div>
-    <p style="color:#6c757d;">Sistema de comparación de precios entre tiendas. Usa el menú lateral para gestionar tiendas, productos, ventas, usuarios y clientes.</p>
-    <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-      <a routerLink="/stores" class="btn btn-primary">Ver Tiendas</a>
-      <a routerLink="/products" class="btn btn-outline-primary">Ver Productos</a>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+  <p-card header="Acciones rapidas">
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <a routerLink="/stores" class="p-button p-button-outlined p-button-sm w-full" style="text-align: left;">
+        <i class="pi pi-shop" style="margin-right: 0.75rem"></i> Gestionar Tiendas
+      </a>
+      <a routerLink="/products" class="p-button p-button-outlined p-button-sm w-full" style="text-align: left;">
+        <i class="pi pi-box" style="margin-right: 0.75rem"></i> Gestionar Productos
+      </a>
+      <a routerLink="/sales" class="p-button p-button-outlined p-button-sm w-full" style="text-align: left;">
+        <i class="pi pi-dollar" style="margin-right: 0.75rem"></i> Registrar Venta
+      </a>
     </div>
-  </div>
+  </p-card>
+
+  <p-card header="Resumen del sistema">
+    <p style="color: var(--p-text-muted-color); margin: 0;">
+      Sistema de comparacion de precios con gestion de tiendas, productos, ventas, usuarios y catalogos.
+    </p>
+    <ul style="margin: 1rem 0 0; padding-left: 1.25rem; color: var(--p-text-muted-color);">
+      <li>CRUD completo para todas las entidades</li>
+      <li>Catalogos de referencia</li>
+      <li>Modo oscuro disponible</li>
+    </ul>
+  </p-card>
 </div>

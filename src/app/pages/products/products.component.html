@@ -1,47 +1,92 @@
-<div class="content">
-  <div class="page-header"><h1>Productos</h1>
-    <button class="btn btn-primary" (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}</button>
+<app-page-header title="Productos" subtitle="Catalogo de productos" createLabel="Nuevo producto" (create)="openCreate()">
+  <ng-container extra>
+    <p-select
+      [options]="[{label:'Todas las tiendas', value:null}, ...storeOptions]"
+      [(ngModel)]="filterStoreId"
+      placeholder="Filtrar por tienda"
+      styleClass="w-15rem"
+      (onChange)="loadProducts()" />
+  </ng-container>
+</app-page-header>
+
+@if (loading() && products().length === 0) {
+  <p-card><p-progressSpinner /></p-card>
+} @else if (!loading() && products().length === 0) {
+  <app-empty-state
+    icon="pi pi-box"
+    title="No hay productos"
+    description="Crea el primer producto"
+    actionLabel="Nuevo producto"
+    (action)="openCreate()" />
+} @else {
+  <p-card>
+    <p-table
+      [value]="products()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      sortField="name"
+      [sortOrder]="1"
+      styleClass="p-datatable-sm"
+      responsiveLayout="scroll">
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+          <th pSortableColumn="name">Nombre <p-sortIcon field="name" /></th>
+          <th pSortableColumn="price">Precio <p-sortIcon field="price" /></th>
+          <th pSortableColumn="storeName">Tienda <p-sortIcon field="storeName" /></th>
+          <th>Categoria</th>
+          <th style="width: 8rem;">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-product>
+        <tr>
+          <td>{{ product.id }}</td>
+          <td><strong>{{ product.name }}</strong></td>
+          <td>{{ product.price | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td>{{ product.storeName || getStoreName(product.storeId) }}</td>
+          <td><p-tag [value]="product.categoryProductDescription || getCategoryName(product.categoryProductId)" severity="info" /></td>
+          <td>
+            <div style="display: flex; gap: 0.25rem;">
+              <p-button icon="pi pi-pencil" severity="secondary" variant="text" size="small" rounded (onClick)="openEdit(product)" />
+              <p-button icon="pi pi-trash" severity="danger" variant="text" size="small" rounded (onClick)="confirmDelete(product)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+}
+
+<p-dialog
+  [header]="isEditing() ? 'Editar producto' : 'Nuevo producto'"
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [modal]="true"
+  [style]="{ width: '500px' }">
+  <div class="form-grid" style="margin-bottom: 1rem;">
+    <div>
+      <label class="form-label">Nombre</label>
+      <input pInputText [(ngModel)]="form.name" class="w-full" />
+    </div>
+    <div>
+      <label class="form-label">Precio</label>
+      <p-inputNumber [(ngModel)]="form.price" mode="currency" currency="COP" locale="es-CO" class="w-full" />
+    </div>
   </div>
-
-  @if (showForm()) {
-    <div class="card"><div class="card-header"><h3>Nuevo Producto</h3></div>
-      <div class="form-grid">
-        <div><label class="form-label">Nombre</label><input class="form-control" [(ngModel)]="newProduct.name" /></div>
-        <div><label class="form-label">Precio</label><input class="form-control" type="number" [(ngModel)]="newProduct.price" /></div>
-        <div><label class="form-label">Tienda ID</label><input class="form-control" type="number" [(ngModel)]="newProduct.storeId" /></div>
-        <div><label class="form-label">Categoría ID</label><input class="form-control" type="number" [(ngModel)]="newProduct.categoryProductId" /></div>
-      </div>
-      <button class="btn btn-success mt-3" (click)="create()">Guardar Producto</button>
+  <div class="form-grid" style="margin-bottom: 1.5rem;">
+    <div>
+      <label class="form-label">Tienda</label>
+      <p-select [options]="storeOptions" [(ngModel)]="form.storeId" class="w-full" />
     </div>
-  }
-
-  <div class="card mb-3">
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <span class="fw-medium">Filtrar por tienda:</span>
-      <select class="form-select" style="width:250px;" [(ngModel)]="filterStoreId" (change)="loadProducts()">
-        <option [ngValue]="0">Todas las tiendas</option>
-        @for (s of stores(); track s.id) { <option [ngValue]="s.id">{{ s.name }}</option> }
-      </select>
+    <div>
+      <label class="form-label">Categoria</label>
+      <p-select [options]="categoryOptions" [(ngModel)]="form.categoryProductId" class="w-full" />
     </div>
   </div>
-
-  @if (loading()) { <div class="loading">Cargando...</div> }
-  @else if (products().length === 0) { <div class="empty-state"><h3>No hay productos</h3></div> }
-  @else {
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="table table-hover">
-        <thead><tr><th>ID</th><th>Producto</th><th>Precio</th><th>Tienda</th><th>Categoría</th></tr></thead>
-        <tbody>
-          @for (p of products(); track p.id) {
-            <tr>
-              <td class="text-muted">#{{ p.id }}</td><td class="fw-medium">{{ p.name }}</td>
-              <td class="fw-semibold text-success">${{ p.price.toLocaleString('es-CO') }}</td>
-              <td>{{ p.storeName || 'N/A' }}</td>
-              <td><span class="badge badge-success">{{ p.categoryProductDescription || 'N/A' }}</span></td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
-</div>
+  <ng-template #footer>
+    <p-button label="Cancelar" severity="secondary" variant="text" (onClick)="dialogVisible.set(false)" />
+    <p-button [label]="isEditing() ? 'Guardar' : 'Crear'" (onClick)="save()" [disabled]="!form.name || form.price <= 0" />
+  </ng-template>
+</p-dialog>
