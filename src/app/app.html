@@ -1,17 +1,26 @@
-<div class="layout">
-  <nav class="sidebar">
-    <h2>Precios</h2>
-    @for (item of navItems; track item.path) {
-      <a
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: item.path === '/' }">
-        <span class="icon">{{ item.icon }}</span>
-        {{ item.label }}
-      </a>
-    }
-  </nav>
-  <main class="content">
+<div class="flex h-screen bg-gray-50">
+  <aside class="w-64 bg-gray-900 text-gray-300 flex flex-col">
+    <div class="px-6 py-5 border-b border-gray-800">
+      <h1 class="text-lg font-bold text-white tracking-tight">Precios</h1>
+      <p class="text-xs text-gray-500 mt-0.5">Comparador de precios</p>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+          <span class="text-lg">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+    <div class="px-4 py-3 border-t border-gray-800 text-xs text-gray-600">
+      Angular 21 &middot; Tailwind CSS
+    </div>
+  </aside>
+  <main class="flex-1 overflow-y-auto p-6">
     <router-outlet />
   </main>
 </div>

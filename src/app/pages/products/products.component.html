@@ -1,45 +1,78 @@
-<div class="page-header"><h1>Productos</h1><button (click)="showForm.set(!showForm())">{{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}</button></div>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Productos</h1>
+    <p class="text-gray-500 text-sm mt-1">Gestion de productos y precios</p>
+  </div>
+  <button (click)="showForm.set(!showForm())"
+    class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors"
+    [class]="showForm() ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' : 'bg-indigo-600 text-white hover:bg-indigo-700'">
+    {{ showForm() ? 'Cancelar' : '+ Nuevo Producto' }}
+  </button>
+</div>
 
 @if (showForm()) {
-  <div class="card">
-    <h3>Nuevo Producto</h3>
-    <div class="form-row">
-      <div class="form-group"><label>Nombre</label><input [(ngModel)]="newProduct.name" /></div>
-      <div class="form-group"><label>Precio</label><input type="number" [(ngModel)]="newProduct.price" /></div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Nuevo Producto</h3>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre</label>
+        <input [(ngModel)]="newProduct.name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Precio</label>
+        <input type="number" [(ngModel)]="newProduct.price" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tienda ID</label>
+        <input type="number" [(ngModel)]="newProduct.storeId" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Categoria ID</label>
+        <input type="number" [(ngModel)]="newProduct.categoryProductId" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+      </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Tienda ID</label><input type="number" [(ngModel)]="newProduct.storeId" /></div>
-      <div class="form-group"><label>Categoria ID</label><input type="number" [(ngModel)]="newProduct.categoryProductId" /></div>
-    </div>
-    <button class="success" (click)="create()">Guardar</button>
+    <button (click)="create()" class="mt-4 px-5 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors">Guardar Producto</button>
   </div>
 }
 
-<div class="card">
-  <div class="form-row">
-    <div class="form-group">
-      <label>Filtrar por tienda</label>
-      <select [(ngModel)]="filterStoreId" (change)="loadProducts()">
-        <option [ngValue]="0">Todas</option>
-        @for (store of stores(); track store.id) { <option [ngValue]="store.id">{{ store.name }}</option> }
-      </select>
-    </div>
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+  <div class="flex items-center gap-3">
+    <label class="text-sm font-medium text-gray-700">Filtrar por tienda:</label>
+    <select [(ngModel)]="filterStoreId" (change)="loadProducts()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+      <option [ngValue]="0">Todas las tiendas</option>
+      @for (store of stores(); track store.id) {
+        <option [ngValue]="store.id">{{ store.name }}</option>
+      }
+    </select>
   </div>
 </div>
 
-@if (loading()) { <p class="loading">Cargando...</p> }
-@else if (products().length === 0) { <p class="empty">No hay productos</p> }
-@else {
-  <div class="card">
-    <table>
-      <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Tienda</th><th>Categoria</th></tr></thead>
-      <tbody>
+@if (loading()) {
+  <div class="text-center py-12 text-gray-400">Cargando...</div>
+} @else if (products().length === 0) {
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center text-gray-400">
+    <p class="text-lg">No hay productos</p>
+  </div>
+} @else {
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-100">
+        <tr>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tienda</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoria</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
         @for (p of products(); track p.id) {
-          <tr>
-            <td>{{ p.id }}</td><td>{{ p.name }}</td>
-            <td>${{ p.price.toLocaleString('es-CO') }}</td>
-            <td>{{ p.storeName || 'N/A' }}</td>
-            <td><span class="badge badge-green">{{ p.categoryProductDescription || 'N/A' }}</span></td>
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-sm text-gray-500 font-mono">#{{ p.id }}</td>
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ p.name }}</td>
+            <td class="px-6 py-4 text-sm font-semibold text-emerald-600">${{ p.price.toLocaleString('es-CO') }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ p.storeName || 'N/A' }}</td>
+            <td class="px-6 py-4"><span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">{{ p.categoryProductDescription || 'N/A' }}</span></td>
           </tr>
         }
       </tbody>
